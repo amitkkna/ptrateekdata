@@ -28,6 +28,13 @@ export function ElegantDashboard() {
 
   const fetchInvoices = async () => {
     try {
+      // Check if environment variables are properly set
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+        console.error('Supabase environment variables not configured')
+        setLoading(false)
+        return
+      }
+
       const { data, error } = await supabase
         .from('campaign_invoices')
         .select('*')
