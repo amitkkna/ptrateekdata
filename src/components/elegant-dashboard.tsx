@@ -89,9 +89,22 @@ export function ElegantDashboard() {
   const handleSave = async () => {
     if (!editingId || !editingData) return
 
+    // Check environment variables first
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      alert('Database connection not configured. Please check environment variables.')
+      console.error('Missing Supabase environment variables')
+      return
+    }
+
     // Basic validation
     if (!editingData.company || !editingData.campaign_name || !editingData.customer_invoice_number) {
       alert('Please fill in Company, Campaign Name, and Customer Invoice Number')
+      return
+    }
+
+    // Date validation
+    if (!editingData.date_from || !editingData.date_to) {
+      alert('Please fill in both From Date and To Date')
       return
     }
 
@@ -165,9 +178,22 @@ export function ElegantDashboard() {
       setEditingData({})
       setIsAddingNew(false)
       await fetchInvoices()
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error saving invoice:', error)
-      alert('Error saving invoice. Please check the console for details.')
+
+      // Show more specific error messages
+      let errorMessage = 'Error saving invoice. '
+      if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage += `Error: ${error.message}`
+      }
+      if (error && typeof error === 'object' && 'details' in error) {
+        errorMessage += `\nDetails: ${error.details}`
+      }
+      if (error && typeof error === 'object' && 'hint' in error) {
+        errorMessage += `\nHint: ${error.hint}`
+      }
+
+      alert(errorMessage + '\n\nPlease check the browser console for full details.')
     }
   }
 
@@ -261,6 +287,39 @@ export function ElegantDashboard() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-lg">Loading...</div>
+      </div>
+    )
+  }
+
+  // Debug info for troubleshooting
+  const showDebugInfo = !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (showDebugInfo) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <h1 className="text-xl font-bold text-red-800 mb-4">⚠️ Database Connection Issue</h1>
+            <div className="space-y-3 text-sm">
+              <p><strong>Problem:</strong> Supabase environment variables are not configured.</p>
+              <div className="bg-white p-3 rounded border">
+                <p><strong>Current Environment Variables:</strong></p>
+                <p>NEXT_PUBLIC_SUPABASE_URL: {process.env.NEXT_PUBLIC_SUPABASE_URL || '❌ Not set'}</p>
+                <p>NEXT_PUBLIC_SUPABASE_ANON_KEY: {process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? '✅ Set' : '❌ Not set'}</p>
+              </div>
+              <div className="bg-blue-50 p-3 rounded border">
+                <p><strong>To fix this:</strong></p>
+                <ol className="list-decimal list-inside space-y-1 mt-2">
+                  <li>Go to your Netlify dashboard</li>
+                  <li>Navigate to Site settings → Environment variables</li>
+                  <li>Add: NEXT_PUBLIC_SUPABASE_URL = https://sybdtzjudvuklbweqeuw.supabase.co</li>
+                  <li>Add: NEXT_PUBLIC_SUPABASE_ANON_KEY = your_anon_key</li>
+                  <li>Trigger a new deploy</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
