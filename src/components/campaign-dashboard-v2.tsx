@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Plus, Edit, Trash2, Users, Building2, TrendingUp, DollarSign } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { supabase } from '@/lib/supabase'
-import { CampaignWithInvoices, Campaign, CustomerInvoice, VendorInvoice } from '@/lib/database.types'
+import { CampaignWithInvoices } from '@/lib/database.types'
 import { formatCurrency, formatDate } from '@/lib/utils'
 
 export function CampaignDashboardV2() {
@@ -14,7 +14,7 @@ export function CampaignDashboardV2() {
 
   useEffect(() => {
     fetchCampaigns()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchCampaigns = async () => {
     try {
@@ -44,7 +44,7 @@ export function CampaignDashboardV2() {
       const campaignsWithInvoices: CampaignWithInvoices[] = (campaignsData || []).map(campaign => {
         const customerInvs = (customerInvoices || []).filter(inv => inv.campaign_id === campaign.id)
         const vendorInvs = (vendorInvoices || []).filter(inv => inv.campaign_id === campaign.id)
-        
+
         const total_revenue = customerInvs.reduce((sum, inv) => sum + inv.received_amount_without_tax, 0)
         const total_expenses = vendorInvs.reduce((sum, inv) => sum + inv.paid_amount_without_tax, 0)
         const profit = total_revenue - total_expenses
@@ -164,7 +164,7 @@ export function CampaignDashboardV2() {
                       {formatCurrency(selectedCampaign.total_revenue)}
                     </div>
                   </div>
-                  
+
                   <div className="bg-red-50 p-4 rounded-lg">
                     <div className="flex items-center">
                       <Building2 className="w-5 h-5 text-red-600 mr-2" />
@@ -174,7 +174,7 @@ export function CampaignDashboardV2() {
                       {formatCurrency(selectedCampaign.total_expenses)}
                     </div>
                   </div>
-                  
+
                   <div className={`p-4 rounded-lg ${
                     selectedCampaign.profit >= 0 ? 'bg-blue-50' : 'bg-orange-50'
                   }`}>
@@ -192,7 +192,7 @@ export function CampaignDashboardV2() {
                       {formatCurrency(selectedCampaign.profit)}
                     </div>
                   </div>
-                  
+
                   <div className="bg-purple-50 p-4 rounded-lg">
                     <div className="flex items-center">
                       <Users className="w-5 h-5 text-purple-600 mr-2" />
@@ -247,7 +247,7 @@ export function CampaignDashboardV2() {
                           </td>
                           <td className="px-4 py-3">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              invoice.payment_status === 'Clear' 
+                              invoice.payment_status === 'Clear'
                                 ? 'bg-green-100 text-green-800'
                                 : invoice.payment_status === 'Pending'
                                 ? 'bg-yellow-100 text-yellow-800'
@@ -315,7 +315,7 @@ export function CampaignDashboardV2() {
                           </td>
                           <td className="px-4 py-3">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              invoice.payment_status === 'Clear' 
+                              invoice.payment_status === 'Clear'
                                 ? 'bg-green-100 text-green-800'
                                 : invoice.payment_status === 'Pending'
                                 ? 'bg-yellow-100 text-yellow-800'

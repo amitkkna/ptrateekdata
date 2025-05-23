@@ -35,7 +35,7 @@ export function ElegantDashboard() {
     }
   }
 
-  const handleAddNew = (existingCampaign?: any) => {
+  const handleAddNew = (existingCampaign?: { company: string; campaign_name: string; date_from: string; date_to: string }) => {
     const newInvoice: Partial<CampaignInvoice> = {
       id: 'temp-new',
       company: existingCampaign?.company || '',
@@ -84,11 +84,10 @@ export function ElegantDashboard() {
     try {
       const TAX_RATE = 0.18
 
-      // Calculate profit and margin
+      // Calculate profit (margin is auto-calculated by database)
       const customerReceived = editingData.customer_received_amount_without_tax || 0
       const vendorPaid = editingData.vendor_paid_amount_without_tax || 0
       const profit = customerReceived - vendorPaid
-      const margin = customerReceived > 0 ? (profit / customerReceived) * 100 : 0
 
       const updatedData = {
         ...editingData,
@@ -184,7 +183,7 @@ export function ElegantDashboard() {
     }
   }
 
-  const handleFieldChange = (field: keyof CampaignInvoice, value: any) => {
+  const handleFieldChange = (field: keyof CampaignInvoice, value: string | number) => {
     setEditingData(prev => ({ ...prev, [field]: value }))
   }
 
@@ -211,7 +210,17 @@ export function ElegantDashboard() {
     acc[key].totalMargin = acc[key].totalCustomerRevenue > 0 ?
       (acc[key].totalProfit / acc[key].totalCustomerRevenue) * 100 : 0
     return acc
-  }, {} as Record<string, any>)
+  }, {} as Record<string, {
+    company: string;
+    campaign_name: string;
+    date_from: string;
+    date_to: string;
+    invoices: CampaignInvoice[];
+    totalCustomerRevenue: number;
+    totalVendorExpense: number;
+    totalProfit: number;
+    totalMargin: number;
+  }>)
 
   const campaigns = Object.values(groupedCampaigns)
 
@@ -315,7 +324,7 @@ export function ElegantDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {campaigns.map((campaign, campaignIndex) => {
+                {campaigns.map((campaign) => {
                   const campaignKey = `${campaign.company}-${campaign.campaign_name}`
                   const isExpanded = expandedCampaigns.has(campaignKey)
 

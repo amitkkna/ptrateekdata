@@ -10,11 +10,11 @@ import { formatCurrency, formatDate } from '@/lib/utils'
 
 // Editable Cell Component
 interface EditableCellProps {
-  value: any
+  value: string | number
   isEditing: boolean
   type?: 'text' | 'number' | 'date' | 'select'
   options?: string[]
-  onChange: (value: any) => void
+  onChange: (value: string | number) => void
   className?: string
   readOnly?: boolean
 }
@@ -127,11 +127,11 @@ export function CampaignDashboard() {
       }
 
       if (isAddingNew) {
-        const { error } = await supabase
+        await supabase
           .from('campaign_invoices')
           .insert([updatedData])
       } else {
-        const { error } = await supabase
+        await supabase
           .from('campaign_invoices')
           .update(updatedData)
           .eq('id', editingId)
@@ -187,7 +187,7 @@ export function CampaignDashboard() {
     setIsAddingNew(true)
   }
 
-  const handleFieldChange = (field: keyof CampaignInvoice, value: any) => {
+  const handleFieldChange = (field: keyof CampaignInvoice, value: string | number) => {
     setEditingData(prev => ({ ...prev, [field]: value }))
   }
 
