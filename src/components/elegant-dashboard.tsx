@@ -84,10 +84,10 @@ export function ElegantDashboard() {
     try {
       const TAX_RATE = 0.18
 
-      // Calculate profit (margin is auto-calculated by database)
-      const customerReceived = editingData.customer_received_amount_without_tax || 0
-      const vendorPaid = editingData.vendor_paid_amount_without_tax || 0
-      const profit = customerReceived - vendorPaid
+      // Profit and margin are auto-calculated by database
+      // const customerReceived = editingData.customer_received_amount_without_tax || 0
+      // const vendorPaid = editingData.vendor_paid_amount_without_tax || 0
+      // const profit = customerReceived - vendorPaid
 
       const updatedData = {
         ...editingData,
@@ -259,7 +259,7 @@ export function ElegantDashboard() {
           <h1 className="text-2xl font-bold text-gray-900">Campaign Profitability Tracker</h1>
           <div className="flex gap-3">
             <Button
-              onClick={handleAddNew}
+              onClick={() => handleAddNew()}
               disabled={editingId !== null}
               className="bg-blue-600 hover:bg-blue-700"
             >

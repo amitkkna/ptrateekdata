@@ -10,7 +10,7 @@ import { formatCurrency, formatDate } from '@/lib/utils'
 
 // Editable Cell Component
 interface EditableCellProps {
-  value: string | number
+  value: string | number | null | undefined
   isEditing: boolean
   type?: 'text' | 'number' | 'date' | 'select'
   options?: string[]
@@ -25,13 +25,13 @@ function EditableCell({ value, isEditing, type = 'text', options, onChange, clas
       return <span className={className}>{formatCurrency(value)}</span>
     }
     if (type === 'date' && value) {
-      return <span className={className}>{formatDate(value)}</span>
+      return <span className={className}>{formatDate(String(value))}</span>
     }
     return <span className={className}>{value || 'N/A'}</span>
   }
 
   if (readOnly) {
-    return <span className={`${className} bg-gray-100 px-2 py-1 rounded`}>{type === 'number' ? formatCurrency(value || 0) : value}</span>
+    return <span className={`${className} bg-gray-100 px-2 py-1 rounded`}>{type === 'number' ? formatCurrency(Number(value) || 0) : (value ?? '')}</span>
   }
 
   if (type === 'select' && options) {
@@ -340,7 +340,8 @@ export function CampaignDashboard() {
                           onChange={(value) => {
                             handleFieldChange('customer_amount_without_tax', value)
                             // Auto-calculate tax
-                            handleFieldChange('customer_amount_with_tax', Math.round(value * 1.18 * 100) / 100)
+                            const numValue = typeof value === 'number' ? value : parseFloat(String(value)) || 0
+                            handleFieldChange('customer_amount_with_tax', Math.round(numValue * 1.18 * 100) / 100)
                           }}
                         />
                         <div className="text-xs">Tax:</div>
@@ -365,7 +366,8 @@ export function CampaignDashboard() {
                           onChange={(value) => {
                             handleFieldChange('customer_received_amount_without_tax', value)
                             // Auto-calculate tax
-                            handleFieldChange('customer_received_amount_with_tax', Math.round(value * 1.18 * 100) / 100)
+                            const numValue = typeof value === 'number' ? value : parseFloat(String(value)) || 0
+                            handleFieldChange('customer_received_amount_with_tax', Math.round(numValue * 1.18 * 100) / 100)
                           }}
                         />
                         <EditableCell
@@ -401,7 +403,8 @@ export function CampaignDashboard() {
                           onChange={(value) => {
                             handleFieldChange('vendor_paid_amount_without_tax', value)
                             // Auto-calculate tax
-                            handleFieldChange('vendor_paid_amount_with_tax', Math.round(value * 1.18 * 100) / 100)
+                            const numValue = typeof value === 'number' ? value : parseFloat(String(value)) || 0
+                            handleFieldChange('vendor_paid_amount_with_tax', Math.round(numValue * 1.18 * 100) / 100)
                           }}
                         />
                       </div>
