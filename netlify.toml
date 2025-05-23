@@ -10,14 +10,5 @@
   to = "/index.html"
   status = 200
 
-[context.production.environment]
-  NEXT_PUBLIC_SUPABASE_URL = "https://your-project-id.supabase.co"
-  NEXT_PUBLIC_SUPABASE_ANON_KEY = "your_supabase_anon_key_here"
-
-[context.deploy-preview.environment]
-  NEXT_PUBLIC_SUPABASE_URL = "https://your-project-id.supabase.co"
-  NEXT_PUBLIC_SUPABASE_ANON_KEY = "your_supabase_anon_key_here"
-
-[context.branch-deploy.environment]
-  NEXT_PUBLIC_SUPABASE_URL = "https://your-project-id.supabase.co"
-  NEXT_PUBLIC_SUPABASE_ANON_KEY = "your_supabase_anon_key_here"
+# Note: Set these in Netlify UI under Site Settings > Environment Variables
+# Don't put actual values here for security

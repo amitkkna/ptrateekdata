@@ -16,6 +16,13 @@ export function ElegantDashboard() {
   const [isAddingNew, setIsAddingNew] = useState(false)
 
   useEffect(() => {
+    // Debug environment variables in production
+    console.log('Environment check:', {
+      supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+      hasSupabaseKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      keyPrefix: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.substring(0, 10)
+    })
+
     fetchInvoices()
   }, [])
 
